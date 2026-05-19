@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""AutoBarcoder interactive setup wizard.
+
+Verifies Python + dependencies, sets up a virtualenv if asked, runs a smoke
+test against the bundled sample dataset, and points the user at the web UI.
+
+Run with:  python3 bin/autobarcoder-setup
+"""
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import subprocess
+import sys
+import venv
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def c(s, color):
+    return f"\033[{color}m{s}\033[0m"
+
+
+def info(s):  print(c("›", "36") + " " + s)
+def ok(s):    print(c("✓", "32") + " " + s)
+def warn(s):  print(c("!", "33") + " " + s)
+def err(s):   print(c("✗", "31") + " " + s)
+
+
+def step(title):
+    print("\n" + c(f"━━ {title} ", "36") + c("━" * (60 - len(title)), "36"))
+
+
+def check_python():
+    step("Python version")
+    v = sys.version_info
+    if v < (3, 9):
+        err(f"Python {v.major}.{v.minor} found — AutoBarcoder needs Python 3.9 or newer.")
+        sys.exit(1)
+    ok(f"Python {v.major}.{v.minor}.{v.micro}")
+
+
+def yes(prompt, default=True):
+    suffix = " [Y/n] " if default else " [y/N] "
+    a = input(prompt + suffix).strip().lower()
+    if not a:
+        return default
+    return a.startswith("y")
+
+
+def create_venv():
+    step("Virtual environment")
+    venv_dir = ROOT / ".venv"
+    if venv_dir.exists():
+        ok(f"Found existing venv at {venv_dir}")
+        return venv_dir
+    if not yes("No virtualenv detected. Create one at .venv?"):
+        warn("Skipping venv creation. Make sure dependencies are installed system-wide.")
+        return None
+    info("Creating .venv …")
+    venv.EnvBuilder(with_pip=True, clear=False).create(str(venv_dir))
+    ok(f"Created {venv_dir}")
+    return venv_dir
+
+
+def install_deps(venv_dir):
+    step("Install dependencies")
+    py = (venv_dir / "bin" / "python") if venv_dir else Path(sys.executable)
+    base = subprocess.run([str(py), "-m", "pip", "install", "--upgrade", "pip"], cwd=ROOT)
+    if base.returncode:
+        err("Failed to upgrade pip"); sys.exit(base.returncode)
+    for req in ("requirements.txt", "webapp/requirements.txt"):
+        info(f"pip install -r {req}")
+        r = subprocess.run([str(py), "-m", "pip", "install", "-r", req], cwd=ROOT)
+        if r.returncode:
+            err(f"pip install -r {req} failed"); sys.exit(r.returncode)
+    ok("Dependencies installed")
+    return py
+
+
+def smoke_test(py):
+    step("Smoke test (sample dataset)")
+    sample_cfg = json.loads((ROOT / "sample_data" / "sample_config.json").read_text())
+    sample_file = ROOT / "sample_data" / "sample_reads.txt"
+    if not sample_file.exists():
+        warn("sample_reads.txt missing; regenerating…")
+        subprocess.run([str(py), "sample_data/generate_sample.py"], cwd=ROOT, check=True)
+    out_dir = ROOT / ".cache" / "setup_smoke"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    script = f"""
+import sys
+sys.path.insert(0, {str(ROOT)!r})
+from barcodes.processing import process_single_plate_for_reads
+cfg = {sample_cfg!r}
+with open({str(sample_file)!r}) as f:
+    res = process_single_plate_for_reads(
+        {str(out_dir / 'summary.txt')!r},
+        {str(out_dir / 'results.pdf')!r},
+        f.readlines(),
+        cfg['start_text'], cfg['end_text'],
+        cfg['expected_len'] + 5, cfg['distance_threshold'],
+        cfg['rows'], cfg['columns'],
+        expected_len=cfg['expected_len'],
+    )
+total = len(res); ok_count = sum(1 for w in res if not w['contaminated'])
+print(f'WELLS={{total}} OK={{ok_count}}')
+"""
+    r = subprocess.run([str(py), "-c", script], capture_output=True, text=True)
+    if r.returncode:
+        err("Smoke test failed:")
+        print(r.stderr)
+        sys.exit(r.returncode)
+    line = [l for l in r.stdout.splitlines() if l.startswith("WELLS=")][-1]
+    ok(f"Smoke test passed — {line}")
+
+
+def final_instructions(venv_dir):
+    step("All set")
+    if venv_dir:
+        print("\nLaunch the web UI:")
+        print(c(f"  {venv_dir}/bin/python -m uvicorn webapp.backend.main:app --host 127.0.0.1 --port 8000", "32"))
+        print("\nOr just:")
+        print(c("  bash webapp/run.sh", "32"))
+    else:
+        print(c("  bash webapp/run.sh", "32"))
+    print("\nOpen http://127.0.0.1:8000 — and click ‘Try with sample data’ to verify.")
+
+
+def main():
+    print(c("AutoBarcoder setup wizard", "1;36"))
+    print(c("─" * 36, "36"))
+    check_python()
+    vd = create_venv()
+    py = install_deps(vd)
+    smoke_test(py)
+    final_instructions(vd)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        err("\nAborted."); sys.exit(130)

@@ -1,4 +1,5 @@
-matplotlib
-networkx
-python-Levenshtein
-
+matplotlib>=3.5
+networkx>=2.8
+python-Levenshtein>=0.20
+pandas>=1.4
+numpy>=1.22

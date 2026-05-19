@@ -1,0 +1,9 @@
+{
+  "rows": ["AAACGT", "AATTGG", "ACGTAC", "ACTGAA"],
+  "columns": ["CCGTAA", "CCGGTT", "CGAGCT", "CTACGG"],
+  "start_text": "CAGCTG",
+  "end_text": "GGATCC",
+  "expected_len": 8,
+  "distance_threshold": 2,
+  "description": "Synthetic 4x4 plate demo. Each well contains 25 reads with 1-2 dominant 8-nt barcodes plus low-rate edit noise. Designed to run end-to-end in under 5 seconds."
+}

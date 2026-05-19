@@ -452,17 +452,22 @@ def make_cluster_web(
 
 # ========================= Run =========================
 
-def build_and_render_default():
+def build_and_render_default(out_dir="."):
+    import os
     dataset = build_dataset_5()
     make_cluster_web(
         dataset,
         distance_threshold=2,
         layout_seed=7,
-        out_png="/Users/abhinavbachu/Downloads/barcode_clustering_web.png",
-        out_jpg="/Users/abhinavbachu/Downloads/barcode_clustering_web.jpg",
-        out_pdf="barcode_clustering_web.pdf",
+        out_png=os.path.join(out_dir, "barcode_clustering_web.png"),
+        out_jpg=os.path.join(out_dir, "barcode_clustering_web.jpg"),
+        out_pdf=os.path.join(out_dir, "barcode_clustering_web.pdf"),
         dpi_export=900,
     )
 
 if __name__ == "__main__":
-    build_and_render_default()
+    import argparse
+    p = argparse.ArgumentParser(description="Render a synthetic clustering web (publication-style)")
+    p.add_argument("-o", "--out-dir", default=".", help="Directory for PNG/JPG/PDF output")
+    args = p.parse_args()
+    build_and_render_default(args.out_dir)

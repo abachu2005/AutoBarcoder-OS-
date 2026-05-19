@@ -1,0 +1,29 @@
+{
+  "title": "AutoBarcoder: 96-well plate RNA barcode demultiplexing and clustering",
+  "description": "AutoBarcoder is a Python tool for demultiplexing and clustering RNA barcodes from 96-well-plate sequencing reads. It uses Levenshtein distance and connected-components clustering (NetworkX) to group similar barcodes per well, and ships a Tkinter GUI, FastAPI web UI, and an interactive setup wizard.",
+  "license": "MIT",
+  "upload_type": "software",
+  "access_right": "open",
+  "keywords": [
+    "bioinformatics",
+    "sequencing",
+    "barcode-analysis",
+    "96-well-plate",
+    "clustering",
+    "RNA",
+    "Levenshtein"
+  ],
+  "creators": [
+    {
+      "name": "Bachu, Abhinav",
+      "affiliation": "Northwestern University"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/abachu2005/AutoBarcoder-OS-",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}

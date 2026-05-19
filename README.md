@@ -4,7 +4,7 @@
 
 AutoBarcoder takes a pile of sequencing reads, sorts them back into 96 wells using your row/column barcodes, clusters the variable RNA barcode between two flanking sequences, and produces a per-well summary (TXT + PDF) of the top barcode variants. It handles single plates and multi-plate runs.
 
-![status: ready](https://img.shields.io/badge/status-ready-brightgreen) ![python: 3.9+](https://img.shields.io/badge/python-3.9%2B-blue) ![license: MIT](https://img.shields.io/badge/license-MIT-lightgrey)
+![status: ready](https://img.shields.io/badge/status-ready-brightgreen) ![python: 3.9+](https://img.shields.io/badge/python-3.9%2B-blue) ![license: MIT](https://img.shields.io/badge/license-MIT-lightgrey) [![DOI](https://zenodo.org/badge/929581836.svg)](https://zenodo.org/badge/latestdoi/929581836) [![CI](https://github.com/abachu2005/AutoBarcoder-OS-/actions/workflows/ci.yml/badge.svg)](https://github.com/abachu2005/AutoBarcoder-OS-/actions/workflows/ci.yml)
 
 ---
 

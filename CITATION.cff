@@ -7,6 +7,11 @@ authors:
     given-names: Abhinav
 repository-code: "https://github.com/abachu2005/AutoBarcoder-OS-"
 url: "https://github.com/abachu2005/AutoBarcoder-OS-"
+doi: "10.5281/zenodo.20297749"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.20297749"
+    description: "Concept DOI (always resolves to the latest release)"
 abstract: >-
   AutoBarcoder is a Python tool for demultiplexing and clustering RNA
   barcodes from 96-well-plate sequencing reads. It uses Levenshtein

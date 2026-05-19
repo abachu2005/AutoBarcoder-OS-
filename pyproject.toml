@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autobarcoder"
+version = "1.0.0"
+description = "Demultiplex and cluster RNA barcodes from 96-well-plate sequencing reads."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Abhinav Bachu" }]
+requires-python = ">=3.9"
+keywords = ["bioinformatics", "sequencing", "barcode", "clustering", "96-well-plate", "RNA"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "matplotlib>=3.5",
+    "networkx>=2.8",
+    "python-Levenshtein>=0.20",
+    "pandas>=1.4",
+    "numpy>=1.22",
+]
+
+[project.optional-dependencies]
+web = [
+    "fastapi>=0.104",
+    "uvicorn[standard]>=0.24",
+    "python-multipart>=0.0.6",
+]
+dev = [
+    "pytest>=7",
+    "pytest-cov>=4",
+    "ruff>=0.4",
+    "pre-commit>=3",
+    "httpx>=0.27",
+]
+
+[project.urls]
+Homepage = "https://github.com/abachu2005/AutoBarcoder-OS-"
+Repository = "https://github.com/abachu2005/AutoBarcoder-OS-"
+Issues = "https://github.com/abachu2005/AutoBarcoder-OS-/issues"
+Changelog = "https://github.com/abachu2005/AutoBarcoder-OS-/blob/main/CHANGELOG.md"
+
+[project.scripts]
+autobarcoder-gui = "main:main"
+autobarcoder-web = "webapp.backend.main:main"
+autobarcoder-setup = "autobarcoder_cli.setup_wizard:main"
+
+[tool.setuptools]
+packages = ["barcodes", "gui", "webapp", "webapp.backend", "autobarcoder_cli"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+webapp = ["frontend/*"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = ["E501", "B008"]  # B008: FastAPI uses Depends/File/Form as defaults by design
+
+[tool.ruff.lint.per-file-ignores]
+"viz.py" = ["E", "F", "W", "UP", "B", "SIM"]            # publication-style standalone script
+"diagnostics.py" = ["E", "F", "W", "B", "SIM"]
+"webapp/backend/main.py" = ["B008"]
+"barcodes/processing.py" = ["E741"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -q"

@@ -14,3 +14,13 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# Webapp runtime job artifacts
+webapp/data/
+.cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+

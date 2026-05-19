@@ -1,11 +1,10 @@
 # reading.py
 import os
-import glob
-from collections import defaultdict
+
 
 def read_barcodes_from_merged(file_path, word1, word2, start_text, end_text):
     barcodes = []
-    with open(file_path, 'r') as merged:
+    with open(file_path) as merged:
         for line in merged:
             if word1 in line and word2 in line:
                 start_index = line.find(start_text) + len(start_text)
@@ -31,13 +30,12 @@ def allocate_reads_by_plate(file_path, plate_ids, output_dir):
     # Process each plate ID individually
     for plate_id in plate_ids:
         output_file_path = os.path.join(reads_dir, f"{plate_id}_reads.txt")
-        with open(output_file_path, 'w') as output_file:
-            with open(file_path, 'r') as file:
-                for line in file:
-                    total_lines += 1
-                    if plate_id in line:
-                        word_count[plate_id] += 1
-                        output_file.write(line)
+        with open(output_file_path, 'w') as output_file, open(file_path) as file:
+            for line in file:
+                total_lines += 1
+                if plate_id in line:
+                    word_count[plate_id] += 1
+                    output_file.write(line)
 
         print(f"Plate {plate_id} allocated {word_count[plate_id]} reads out of {total_lines} lines.")
 

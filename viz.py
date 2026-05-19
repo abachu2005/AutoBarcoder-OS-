@@ -1,19 +1,18 @@
 # viz_prism.py — 5 clusters, tight center layout, bigger nodes,
 # intra-cluster edges visible, no-overlap, and crisp labels on top.
 
+import contextlib
 from collections import Counter, defaultdict
-from typing import List, Dict, Tuple
 
 import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 import matplotlib.lines as mlines
-from matplotlib.font_manager import FontProperties
-from matplotlib.textpath import TextPath
-from matplotlib import patheffects as pe
-
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
+from matplotlib import patheffects as pe
+from matplotlib.font_manager import FontProperties
+from matplotlib.textpath import TextPath
 
 # ============================== Prism Style (bigger/clearer) ==============================
 
@@ -91,8 +90,8 @@ CLUSTERS5_SPEC = {
     "CGATCGAT": {"base_count": 9,  "variants": [(2,"T",3),(4,"A",3),(1,"A",1),(8,"C",1)]},      # ~17
 }
 
-def build_dataset_5() -> List[str]:
-    data: List[str] = []
+def build_dataset_5() -> list[str]:
+    data: list[str] = []
     for base in SEEDS_ORDERED:
         spec = CLUSTERS5_SPEC[base]
         data.extend([base] * spec["base_count"])
@@ -102,9 +101,9 @@ def build_dataset_5() -> List[str]:
 
 # ========================= Graph (each node = one occurrence) =========================
 
-def build_graph_with_occurrences(barcodes: List[str], distance_threshold: int):
+def build_graph_with_occurrences(barcodes: list[str], distance_threshold: int):
     per_label_idx = defaultdict(int)
-    nodes: List[Tuple[str, int]] = []
+    nodes: list[tuple[str, int]] = []
     for bc in barcodes:
         per_label_idx[bc] += 1
         nodes.append((bc, per_label_idx[bc]))
@@ -126,7 +125,7 @@ def build_graph_with_occurrences(barcodes: List[str], distance_threshold: int):
 
 # ========================= Core + ring layout (dominant mini-cluster) =========================
 
-def _circle_positions(n: int, radius: float, theta0: float = 0.0) -> List[Tuple[float,float]]:
+def _circle_positions(n: int, radius: float, theta0: float = 0.0) -> list[tuple[float,float]]:
     if n == 1:
         return [(0.0, 0.0)]
     return [(radius*np.cos(theta0 + 2*np.pi*k/n),
@@ -142,7 +141,7 @@ def min_pairwise_dist(coords: np.ndarray) -> float:
             if d < md: md = d
     return md
 
-def _enforce_min_sep(pos: Dict, min_sep: float) -> Dict:
+def _enforce_min_sep(pos: dict, min_sep: float) -> dict:
     """Scale positions radially around their centroid until min pairwise distance >= min_sep."""
     keys = list(pos.keys())
     pts = np.array([pos[k] for k in keys], dtype=float)
@@ -163,7 +162,7 @@ def layout_core_and_rings(H: nx.Graph,
                           sep_ring: float = 1.05,     # spacing among ring nodes
                           gap_core_to_ring: float = 1.10,
                           min_sep_units: float = 1.20  # strict no-overlap guard
-                          ) -> Dict:
+                          ) -> dict:
     nodes = list(H.nodes())
     seqs = {n: H.nodes[n]["seq"] for n in nodes}
     core_nodes = [n for n in nodes if seqs[n] == dominant_label]
@@ -204,7 +203,7 @@ def layout_core_and_rings(H: nx.Graph,
 
 # ========================= Text sizing & drawing (labels on top) =========================
 
-def _measure_text_multiline(lines: List[str], fs: int) -> Tuple[float, float]:
+def _measure_text_multiline(lines: list[str], fs: int) -> tuple[float, float]:
     widths = []; heights = []
     for s in lines:
         tp = TextPath((0, 0), s, size=fs, prop=_FP)
@@ -227,8 +226,8 @@ def fit_fontsize_in_circle_multiline(text: str, radius_pt: float,
             return fs
     return min_pt
 
-def draw_labels_inside_nodes(ax, positions: Dict, node_size: float,
-                             labels: Dict, text_colors: Dict = None, z: int = 6):
+def draw_labels_inside_nodes(ax, positions: dict, node_size: float,
+                             labels: dict, text_colors: dict = None, z: int = 6):
     # node_size in NetworkX is points^2 → convert to radius in points
     radius_pt = (float(node_size) / np.pi) ** 0.5
     for n, (x, y) in positions.items():
@@ -253,7 +252,7 @@ def _dynamic_node_size(n_nodes: int) -> int:
     return max(2400, min(size, 4200))   # clamp
 
 def make_cluster_web(
-    barcodes: List[str],
+    barcodes: list[str],
     distance_threshold: int = 2,
     layout_seed: int = 7,
     out_png: str = "barcode_clustering_web.png",
@@ -272,8 +271,8 @@ def make_cluster_web(
         return 10_000
     comps.sort(key=comp_key)
 
-    consensus: List[str] = []
-    sizes: List[int] = []
+    consensus: list[str] = []
+    sizes: list[int] = []
     cluster_subgraphs = []
     cluster_pos_rel = []
     cluster_bboxes = []
@@ -369,7 +368,7 @@ def make_cluster_web(
                                     color=PRISM_GRAY_LIGHT, linewidth=PRISM_META_LINE_LW,
                                     alpha=1.0, solid_capstyle="butt", zorder=1))
 
-    grey_cycle: List[str] = GRAPH_PAD_GREYS
+    grey_cycle: list[str] = GRAPH_PAD_GREYS
 
     # Draw clusters
     for idx, H in enumerate(cluster_subgraphs):
@@ -421,8 +420,7 @@ def make_cluster_web(
             linewidths=PRISM_NODE_EDGE_LW,
             ax=ax,
         )
-        try: node_art.set_zorder(4)
-        except Exception: pass
+        with contextlib.suppress(Exception): node_art.set_zorder(4)
 
         # Labels on top with halo and padding
         label_map = {n: H.nodes[n]["seq"] for n in H.nodes()}

@@ -34,8 +34,8 @@ def main():
     bc_len = CFG["expected_len"]
     lines = []
 
-    for r_idx, row in enumerate(CFG["rows"]):
-        for c_idx, col in enumerate(CFG["columns"]):
+    for _r_idx, row in enumerate(CFG["rows"]):
+        for _c_idx, col in enumerate(CFG["columns"]):
             primary = random_bc(bc_len, rng)
             secondary = random_bc(bc_len, rng) if rng.random() < 0.4 else None
 

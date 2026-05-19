@@ -9,21 +9,18 @@ or use the convenience script ``webapp/run.sh``.
 from __future__ import annotations
 
 import json
-import os
 import shutil
-import tempfile
 import threading
 import uuid
 from pathlib import Path
-from typing import Optional
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from barcodes.processing import (
-    process_single_plate_for_reads,
     process_all_pairs_multiple,
+    process_single_plate_for_reads,
 )
 
 ROOT = Path(__file__).resolve().parents[2]

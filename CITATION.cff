@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "AutoBarcoder: 96-well plate RNA barcode demultiplexing and clustering"
+message: "If you use this software, please cite it using the metadata below."
+type: software
+authors:
+  - family-names: Bachu
+    given-names: Abhinav
+repository-code: "https://github.com/abachu2005/AutoBarcoder-OS-"
+url: "https://github.com/abachu2005/AutoBarcoder-OS-"
+abstract: >-
+  AutoBarcoder is a Python tool for demultiplexing and clustering RNA
+  barcodes from 96-well-plate sequencing reads. It uses Levenshtein
+  distance and a connected-components graph (NetworkX) to group similar
+  barcodes per well and outputs per-well summaries (TXT + PDF) plus an
+  interactive web frontend.
+keywords:
+  - bioinformatics
+  - sequencing
+  - barcode-analysis
+  - 96-well-plate
+  - clustering
+  - RNA
+license: MIT
+version: "1.0.0"
+date-released: "2026-05-19"

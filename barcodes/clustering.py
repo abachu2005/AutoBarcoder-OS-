@@ -1,7 +1,9 @@
 # clustering.py
+from collections import Counter
+
 import Levenshtein as lev
 import networkx as nx
-from collections import Counter
+
 
 def replace_long_sequences(barcodes, length_threshold):
     short_sequences = [barcode for barcode in barcodes if len(barcode) <= length_threshold]

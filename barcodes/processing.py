@@ -1,21 +1,22 @@
 """Per-well barcode extraction, clustering, and plate-level report generation."""
-from collections import defaultdict
-import os
 import glob
+import os
+from collections import defaultdict
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
 import pandas as pd
+from matplotlib.backends.backend_pdf import PdfPages
 
-from .clustering import (
-    replace_long_sequences,
-    cluster_barcodes,
-    reprint_with_common_barcodes,
-    most_common_barcodes,
-)
 from .analysis import analyze_barcodes
+from .clustering import (
+    cluster_barcodes,
+    most_common_barcodes,
+    replace_long_sequences,
+    reprint_with_common_barcodes,
+)
 from .reading import allocate_reads_by_plate
 
 

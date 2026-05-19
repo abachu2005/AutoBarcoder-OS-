@@ -1,0 +1,12 @@
+.git
+.venv
+**/__pycache__
+**/*.pyc
+.idea
+.vscode
+.DS_Store
+webapp/data
+.cache
+*.log
+*.pid
+node_modules

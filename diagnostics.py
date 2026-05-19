@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
 
+
 class DiagnosticsApp(tk.Tk):
     def __init__(self):
         super().__init__()

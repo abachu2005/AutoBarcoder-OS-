@@ -1,6 +1,7 @@
 # analysis.py
 from collections import Counter
 
+
 def analyze_barcodes(barcodes, top_n=3):
     line_counts = Counter(barcodes)
     most_common_lines = line_counts.most_common(top_n)

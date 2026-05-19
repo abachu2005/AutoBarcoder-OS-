@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-05-19
+
+### Added
+- `.zenodo.json` for automatic Zenodo archival + DOI minting on every release.
+
 ## [1.0.0] - 2026-05-19
 
 First public release suitable for general OSS distribution.
@@ -34,5 +39,6 @@ First public release suitable for general OSS distribution.
   `use_offset` parameter on the regular pipeline).
 - Hardcoded `R1C1`/`R5C3` Prism-CSV export (now opt-in via the API).
 
-[Unreleased]: https://github.com/abachu2005/AutoBarcoder-OS-/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/abachu2005/AutoBarcoder-OS-/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/abachu2005/AutoBarcoder-OS-/releases/tag/v1.0.1
 [1.0.0]: https://github.com/abachu2005/AutoBarcoder-OS-/releases/tag/v1.0.0

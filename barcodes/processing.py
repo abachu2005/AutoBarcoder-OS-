@@ -8,6 +8,7 @@ from .analysis import analyze_barcodes
 from .reading import allocate_reads_by_plate
 import os
 import glob
+import pandas as pd
 
 def process_barcodes_for_reads(reads, word1, word2, start_text, end_text, length_threshold, distance_threshold):
     barcodes = []
@@ -61,22 +62,47 @@ def process_single_plate_for_reads(
             for col_idx in range(len(array_2d[row_idx])):
                 word1, word2 = array_2d[row_idx][col_idx]
                 most_common_percentages_after = process_barcodes_for_reads(
-                    reads,
-                    word1,
-                    word2,
-                    start_text,
-                    end_text,
-                    length_threshold,
-                    distance_threshold
-                )
-                output += (
-                    f"R{row_idx + 1}C{col_idx + 1}: "
-                    f"{', '.join([f'{line} ({percentage:.2f}%)' for line, percentage in most_common_percentages_after])}\n"
+                    reads, word1, word2,
+                    start_text, end_text,
+                    length_threshold, distance_threshold
                 )
 
-                # Generate plot
+                # if no barcodes found → mark as contaminated
+                if not most_common_percentages_after:
+                    output += f"R{row_idx + 1}C{col_idx + 1}: CONTAMINATED (no barcodes)\n"
+                    labels = ["Contaminated"]
+                    percentages = [0]
+                else:
+                    output += (
+                        f"R{row_idx + 1}C{col_idx + 1}: "
+                        f"{', '.join(f'{line} ({pct:.2f}%)' for line, pct in most_common_percentages_after)}\n"
+                    )
+                    labels, percentages = zip(*most_common_percentages_after)
+                    # ---- Prism-friendly CSV export for specific wells (R1C1 and R5C3) ----
+                    well_id = f"R{row_idx + 1}C{col_idx + 1}"
+                    if well_id in {"R1C1", "R5C3"}:
+                        prism_dir = os.path.join(os.path.dirname(output_pdf_path), "prism_ready")
+                        os.makedirs(prism_dir, exist_ok=True)
+
+                        # Ensure we have simple Python lists, even if "labels, percentages" came from zip()
+                        lbls = list(labels)
+                        vals = [float(v) for v in list(percentages)]
+
+                        # (A) Wide format (recommended for Prism "Column" → Bar graph):
+                        #     Each barcode becomes a column; first row holds the percentage.
+                        wide_df = pd.DataFrame([vals], columns=[str(x) for x in lbls])
+                        wide_csv = os.path.join(prism_dir, f"{well_id}__barplot_wide.csv")
+                        wide_df.to_csv(wide_csv, index=False)
+
+                        # (B) Long format (fallback for Prism import wizard as a single Y column):
+                        #     Two columns: Barcode, Percentage. You can map "Barcode" to row titles.
+                        long_df = pd.DataFrame({"Barcode": [str(x) for x in lbls], "Percentage": vals})
+                        long_csv = os.path.join(prism_dir, f"{well_id}__barplot_long.csv")
+                        long_df.to_csv(long_csv, index=False)
+                    # ----------------------------------------------------------------------
+
+                # generate plot (even for contaminated we draw a 0% bar)
                 fig, ax = plt.subplots(figsize=(10, 6))
-                labels, percentages = zip(*most_common_percentages_after)
                 ax.bar(labels, percentages, color='blue')
                 ax.set_title(f'R{row_idx + 1}C{col_idx + 1}: {word1} - {word2}')
                 ax.set_xlabel('Barcode')

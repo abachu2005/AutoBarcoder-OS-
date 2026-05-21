@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autobarcoder"
-version = "1.0.1"
+version = "1.0.2"
 description = "Demultiplex and cluster RNA barcodes from 96-well-plate sequencing reads."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -58,10 +58,11 @@ autobarcoder-setup = "autobarcoder_cli.setup_wizard:main"
 
 [tool.setuptools]
 packages = ["barcodes", "gui", "webapp", "webapp.backend", "autobarcoder_cli"]
+py-modules = ["main"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-webapp = ["frontend/*"]
+webapp = ["frontend/*", "frontend/**/*"]
 
 [tool.ruff]
 line-length = 110

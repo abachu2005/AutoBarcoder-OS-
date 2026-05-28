@@ -1,6 +1,6 @@
 {
   "title": "AutoBarcoder: 96-well plate RNA barcode demultiplexing and clustering",
-  "description": "AutoBarcoder is a Python tool for demultiplexing and clustering RNA barcodes from 96-well-plate sequencing reads. It uses Levenshtein distance and connected-components clustering (NetworkX) to group similar barcodes per well, and ships a Tkinter GUI, FastAPI web UI, and an interactive setup wizard.",
+  "description": "Developed in the Parvez Lab, Northwestern University Feinberg School of Medicine. AutoBarcoder is a Python tool for demultiplexing and clustering RNA barcodes from 96-well-plate sequencing reads. It uses Levenshtein distance and connected-components clustering (NetworkX) to group similar barcodes per well, and ships a Tkinter GUI, FastAPI web UI, and an interactive setup wizard.",
   "license": "MIT",
   "upload_type": "software",
   "access_right": "open",
@@ -11,7 +11,9 @@
     "96-well-plate",
     "clustering",
     "RNA",
-    "Levenshtein"
+    "Levenshtein",
+    "Northwestern University Feinberg School of Medicine",
+    "Parvez Lab"
   ],
   "creators": [
     {
@@ -24,6 +26,10 @@
       "name": "Parvez, Saba",
       "affiliation": "Northwestern University Feinberg School of Medicine",
       "type": "Supervisor"
+    },
+    {
+      "name": "Northwestern University Feinberg School of Medicine",
+      "type": "HostingInstitution"
     }
   ],
   "related_identifiers": [

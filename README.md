@@ -112,3 +112,7 @@ with open("reads.fastq") as f:
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
+
+## Contributors
+
+Developed by **Abhinav Bachu** (Northwestern University Feinberg School of Medicine). Supervised by **Saba Parvez** (Northwestern University Feinberg School of Medicine).

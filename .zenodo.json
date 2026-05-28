@@ -16,7 +16,14 @@
   "creators": [
     {
       "name": "Bachu, Abhinav",
-      "affiliation": "Northwestern University"
+      "affiliation": "Northwestern University Feinberg School of Medicine"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Parvez, Saba",
+      "affiliation": "Northwestern University Feinberg School of Medicine",
+      "type": "Supervisor"
     }
   ],
   "related_identifiers": [
